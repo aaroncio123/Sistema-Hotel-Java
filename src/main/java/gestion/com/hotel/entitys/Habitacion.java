@@ -1,121 +1,116 @@
 package gestion.com.hotel.entitys;
 
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 @Entity
+@Table(name = "habitacion", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"id_hotel", "numero"})
+})
 public class Habitacion {
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Long id_habitacion;
 
-    @Column(name = "id_hotel", nullable = false)
-    private Long id_hotel;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_hotel", nullable = false)
+    private Hotel hotel;
 
-    @Column(name = "id_categoria", nullable = false)
-    private Long id_categoria;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_categoria", nullable = false)
+    private Categoria categoria;
 
-    @Column(name = "numero", nullable = false, unique = true)
-    private Integer numero;
+    @Column(name = "numero", nullable = false)
+    private String numero;
 
-    @Column(name = "piso", nullable = false)
+    @Column(name = "piso")
     private Integer piso;
 
     @Column(name = "estado", nullable = false)
-    
     private String estado;
 
     @Column(name = "observaciones")
     private String observaciones;
 
-    @Column(name = "activo")
-    private Boolean activo;
-
+    @OneToMany(mappedBy = "habitacion", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Reserva> reservas;
 
     public Habitacion() {
     }
-
 
     public Long getId_habitacion() {
         return id_habitacion;
     }
 
-
     public void setId_habitacion(Long id_habitacion) {
         this.id_habitacion = id_habitacion;
     }
 
-
-    public Long getId_hotel() {
-        return id_hotel;
+    public Hotel getHotel() {
+        return hotel;
     }
 
-
-    public void setId_hotel(Long id_hotel) {
-        this.id_hotel = id_hotel;
+    public void setHotel(Hotel hotel) {
+        this.hotel = hotel;
     }
 
-
-    public Long getId_categoria() {
-        return id_categoria;
+    public Categoria getCategoria() {
+        return categoria;
     }
 
-
-    public void setId_categoria(Long id_categoria) {
-        this.id_categoria = id_categoria;
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
     }
 
-
-    public Integer getNumero() {
+    public String getNumero() {
         return numero;
     }
 
-
-    public void setNumero(Integer numero) {
+    public void setNumero(String numero) {
         this.numero = numero;
     }
-
 
     public Integer getPiso() {
         return piso;
     }
 
-
     public void setPiso(Integer piso) {
         this.piso = piso;
     }
-
 
     public String getEstado() {
         return estado;
     }
 
-
     public void setEstado(String estado) {
         this.estado = estado;
     }
-
 
     public String getObservaciones() {
         return observaciones;
     }
 
-
     public void setObservaciones(String observaciones) {
         this.observaciones = observaciones;
     }
 
-
-    public Boolean getActivo() {
-        return activo;
+    public List<Reserva> getReservas() {
+        return reservas;
     }
 
-
-    public void setActivo(Boolean activo) {
-        this.activo = activo;
+    public void setReservas(List<Reserva> reservas) {
+        this.reservas = reservas;
     }
 
-    
 }

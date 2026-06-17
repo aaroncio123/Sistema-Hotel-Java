@@ -1,9 +1,12 @@
 package gestion.com.hotel.entitys;
 
+import java.util.Set;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 
 @Entity
 public class Servicio {
@@ -14,7 +17,7 @@ public class Servicio {
     @Column(name = "nombre", nullable = false, unique = true)
     private String nombre;
 
-    @Column(name = "slug")
+    @Column(name = "slug", unique = true, nullable = false)
     private String slug;
 
     @Column(name = "descripcion")
@@ -25,6 +28,9 @@ public class Servicio {
 
     @Column(name = "activo")
     private Boolean activo;
+
+    @ManyToMany(mappedBy = "servicios")
+    private Set<Hotel> hoteles;
 
     public Servicio() {
 
@@ -76,5 +82,13 @@ public class Servicio {
 
     public void setImagenUrl(String imagenUrl) {
         this.imagenUrl = imagenUrl;
+    }
+
+    public Set<Hotel> getHoteles() {
+        return hoteles;
+    }
+
+    public void setHoteles(Set<Hotel> hoteles) {
+        this.hoteles = hoteles;
     }
 }

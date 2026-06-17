@@ -1,9 +1,18 @@
 package gestion.com.hotel.entitys;
 
+import java.util.List;
+import java.util.Set;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Hotel {
@@ -16,6 +25,9 @@ public class Hotel {
 
     @Column(name = "slug")
     private String slug;
+
+    @Column(name = "descripcion_breve")
+    private String descripcionBreve;
 
     @Column(name = "descripcion")
     private String descripcion;
@@ -37,6 +49,16 @@ public class Hotel {
 
     @Column(name = "activo")
     private Boolean activo;
+
+    @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Habitacion> habitaciones;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "hotel_servicio", 
+        joinColumns = @JoinColumn(name = "id_hotel"), 
+        inverseJoinColumns = @JoinColumn(name = "id_servicio"))
+    private Set<Servicio> servicios;
 
     public Hotel() {
 
@@ -64,6 +86,14 @@ public class Hotel {
 
     public void setSlug(String slug) {
         this.slug = slug;
+    }
+
+    public String getDescripcionBreve() {
+        return descripcionBreve;
+    }
+
+    public void setDescripcionBreve(String descripcionBreve) {
+        this.descripcionBreve = descripcionBreve;
     }
 
     public String getDescripcion() {
@@ -122,5 +152,20 @@ public class Hotel {
         this.activo = activo;
     }
 
+    public List<Habitacion> getHabitaciones() {
+        return habitaciones;
+    }
+
+    public void setHabitaciones(List<Habitacion> habitaciones) {
+        this.habitaciones = habitaciones;
+    }
+
+    public Set<Servicio> getServicios() {
+        return servicios;
+    }
+
+    public void setServicios(Set<Servicio> servicios) {
+        this.servicios = servicios;
+    }
     
 }

@@ -1,9 +1,14 @@
 package gestion.com.hotel.entitys;
 
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Usuario {
@@ -14,20 +19,23 @@ public class Usuario {
     @Column(name = "nombre", nullable = false)
     private String nombre;
 
-    @Column(name = "apellido", nullable = false)
+    @Column(name = "apellido")
     private String apellido;
 
     @Column(name = "correo", nullable = false, unique = true)
     private String correo;
 
-    @Column(name = "clave", nullable = false)
-    private String clave;
+    @Column(name = "password", nullable = false)
+    private String password;
 
     @Column(name = "rol", nullable = false)
     private String rol;
 
-    @Column(name = "activo", nullable = false)
+    @Column(name = "activo")
     private Boolean activo;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Reserva> reservas;
 
     public Usuario() {
 
@@ -65,12 +73,12 @@ public class Usuario {
         this.correo = correo;
     }
 
-    public String getClave() {
-        return clave;
+    public String getPassword() {
+        return password;
     }
 
-    public void setClave(String clave) {
-        this.clave = clave;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getRol() {
@@ -89,5 +97,12 @@ public class Usuario {
         this.activo = activo;
     }
 
+    public List<Reserva> getReservas() {
+        return reservas;
+    }
+
+    public void setReservas(List<Reserva> reservas) {
+        this.reservas = reservas;
+    }
     
 }
