@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import gestion.com.hotel.services.CategoriaService;
+import gestion.com.hotel.services.GeminiService;
 import gestion.com.hotel.services.HabitacionService;
 import gestion.com.hotel.services.HotelService;
 
@@ -17,38 +19,42 @@ import gestion.com.hotel.services.HotelService;
 public class ChatbotController {
 
     @Autowired
+    private GeminiService geminiService;
+    @Autowired
     private HotelService hotelService;
 
     @Autowired
+    private CategoriaService categoriaService;
+
+    @Autowired
     private HabitacionService habitacionService;
+   @PostMapping("/preguntar")
+    public ResponseEntity<ChatbotResponse> responderPregunta(@RequestBody PreguntaRequest pregunta) {
 
-    @PostMapping("/preguntar")
-    public ResponseEntity<String> responderPregunta(@RequestBody PreguntaRequest pregunta) {
-        String mensajeUsuario = pregunta.getMensaje().toLowerCase();
-        String respuesta = "Hola, soy el asistente virtual del hotel. ¿En qué te puedo ayudar?";
+        int cantidadHoteles = hotelService.findAll().size();
+        int cantidadHabitaciones = habitacionService.findAll().size();
+        int cantCategorias = categoriaService.findAll().size();
 
-        // Lógica de lectura básica del backend. 
-        // ¡Aquí en un futuro puedes mandar esta información como contexto a una IA como Gemini!
-        if (mensajeUsuario.contains("hoteles")) {
-            int cantidadHoteles = hotelService.findAll().size();
-            respuesta = "Actualmente tenemos " + cantidadHoteles + " hoteles disponibles en nuestra cadena.";
-        } else if (mensajeUsuario.contains("habitaciones")) {
-            int cantidadHabitaciones = habitacionService.findAll().size();
-            respuesta = "Contamos con un total de " + cantidadHabitaciones + " habitaciones registradas en el sistema.";
-        } else if (mensajeUsuario.contains("reserva")) {
-            respuesta = "Para realizar una reserva, puedes dirigirte a la sección de Hoteles, seleccionar uno y ver sus habitaciones disponibles.";
-        } else {
-            respuesta = "Aún estoy aprendiendo, por ahora puedo hablarte sobre nuestros 'hoteles', 'habitaciones' o cómo generar una 'reserva'.";
-        }
+        String contexto = """
+        Eres el asistente virtual de HotelesUPN, responde breve y se cordial.
 
-        // Se retorna formato JSON plano
-        return ResponseEntity.ok("{\"respuesta\": \"" + respuesta + "\"}");
+        Información actual del sistema:
+        - Hoteles registrados: %d
+        - Habitaciones registradas: %d
+        - Categorias registradas: %d
+        Pregunta del usuario:
+        %s
+
+        Responde de forma breve y clara usando solo la información del sistema.
+        """.formatted(
+            cantidadHoteles,
+            cantidadHabitaciones,
+            cantCategorias,
+            pregunta.getMensaje()
+        );
+
+        String respuesta = geminiService.preguntar(contexto);
+
+        return ResponseEntity.ok(new ChatbotResponse(respuesta));
     }
-}
-
-class PreguntaRequest {
-    private String mensaje;
-
-    public String getMensaje() { return mensaje; }
-    public void setMensaje(String mensaje) { this.mensaje = mensaje; }
 }
