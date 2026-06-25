@@ -25,7 +25,7 @@ public class ChatbotController {
     @PostMapping("/preguntar")
     public ResponseEntity<String> responderPregunta(@RequestBody PreguntaRequest pregunta) {
         String mensajeUsuario = pregunta.getMensaje().toLowerCase();
-        String respuesta = "Hola, soy el asistente virtual del hotel. ¿En qué te puedo ayudar?";
+        String respuesta = "Hola, soy el asistente virtual del HotelesUPN. ¿En qué te puedo ayudar?";
 
         // Lógica de lectura básica del backend. 
         // ¡Aquí en un futuro puedes mandar esta información como contexto a una IA como Gemini!
